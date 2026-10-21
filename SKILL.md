@@ -89,8 +89,12 @@ Standard 及以上档位的八节总结，**必须等用户明确确认读完**�
 2. <skill>/scripts/plens.py text  <pdf>   ← 抽全文（可 grep）
 3. <skill>/scripts/plens.py toc   <pdf>   ← 捞全部节标题，别靠分段读拼窗口
 4. 读：摘要 / 引言末段（贡献列表）/ 方法首段 / 主结果表 / 结论末段（局限）
+   └ 要引表里的数字 → <skill>/scripts/plens.py page 渲染该页，肉眼确认列头
 5. 按 <skill>/assets/quick-card-template.md 出卡
+6. 在 ledger/registry.md 登记一行，评级列写「未评」，备注写「速读卡」
 ```
+
+**第 6 步不是可选的。** Quick 跑完也要留痕——否则半年后你只记得"好像看过这篇"，却找不到卡在哪、当时判断是什么。登记时评级留空是对的：Quick 没读原文，不该给 A/B/C。
 
 **Quick 只有 15 分钟的预算**，所以：不抽图、不建 HTML、不打分、不写八节。但**律 1 仍然生效**——速读卡里的每个数字也要能指回原文。
 
@@ -179,16 +183,19 @@ python -c "import pypdf;   print('pypdf ok')"     # 只有它能抽文本
 
 哪个 `python` 能 import 成功，就用哪个（下文记作 `$PY`）。两个都没有就先装。
 
-### 六个子命令
+### 七个子命令
 
 ```bash
 python <skill>/scripts/plens.py init     --root <PL_ROOT>
 python <skill>/scripts/plens.py fetch    <arxiv_id> --venue "ICLR 2025" --title "..." --root <PL_ROOT>
 python <skill>/scripts/plens.py text     <pdf> -o out.txt [--pages 3,4-7]
 python <skill>/scripts/plens.py toc      <pdf>
+python <skill>/scripts/plens.py page     <pdf> --pages 8 -o dir/     # 整页渲染，核对表头用
 python <skill>/scripts/plens.py figures  <pdf> -o figures/ [--scale 4]
 python <skill>/scripts/plens.py check    <html>
 ```
+
+`page` 和 `figures` 是两件事：`figures` 按题注裁插图；`page` 把整页渲染成 PNG，用来**肉眼核对表格列头**——文本层给得出准确数字，但给不出正确的列。
 
 依赖：`pip install pymupdf`（推荐，抽图必须）或 `pip install pypdf`（仅抽文本够用）。
 

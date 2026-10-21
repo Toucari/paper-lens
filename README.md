@@ -23,22 +23,28 @@ paper-lens 走反方向。它把机械的部分自动化（抽文本、捞结构
 ## 快速开始 1
 
 ```bash
-git clone <this-repo> paper-lens
-cd paper-lens
+# 必须装到【用户级】skill 目录，项目级不会被扫描（实测见下）
+git clone <this-repo> ~/.claude/skills/paper-lens      # Claude Code
+# git clone <this-repo> ~/.workbuddy/skills/paper-lens # WorkBuddy / CodeBuddy
+
 pip install pymupdf          # 推荐；只有 pypdf 也能用，但抽不了图
 
 # 1. 建库
-python scripts/plens.py init --root ~/papers
+python ~/.claude/skills/paper-lens/scripts/plens.py init --root ~/papers
 
 # 2. 填 profile（研究方向、场子白名单、目录）
 #    样例见 assets/profile-template.md 与 assets/profile-example-signal-decoding.md
 $EDITOR ~/papers/profile.md
 
 # 3. 拿一篇已有 PDF 试链路
-python scripts/plens.py text    paper.pdf -o _full.txt
-python scripts/plens.py toc     paper.pdf
-python scripts/plens.py figures paper.pdf -o figures/
+SK=~/.claude/skills/paper-lens
+python $SK/scripts/plens.py text    paper.pdf -o _full.txt
+python $SK/scripts/plens.py toc     paper.pdf
+python $SK/scripts/plens.py page    paper.pdf --pages 8 -o _chk/
+python $SK/scripts/plens.py figures paper.pdf -o figures/
 ```
+
+> ⚠️ **项目级目录（`<workspace>/.workbuddy/skills/`）实测不会被扫描**——装进去之后 skill 列表里看不到它，只能靠人工指路才用得上。2026-10-21 两轮独立实测确认，详见 `CHANGELOG.md`。**装用户级。**
 
 四步都过，就可以把 `SKILL.md` 交给你的 AI 助手（Claude Code / Cursor / 任何支持 skill 的 agent），说一句"快速看一下这篇"。
 

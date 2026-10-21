@@ -432,6 +432,28 @@ def cmd_figures(args):
 
 
 # --------------------------------------------------------------------------
+# page
+# --------------------------------------------------------------------------
+
+def cmd_page(args):
+    need(HAVE_FITZ, "page")
+    doc = open_pdf(args.pdf)
+    pages = parse_pages(args.pages, doc.page_count)
+    if not pages:
+        sys.exit("ERROR: no valid pages in --pages (document has %d)" % doc.page_count)
+    outdir = args.out or "."
+    os.makedirs(outdir, exist_ok=True)
+    for pno in pages:
+        pix = doc[pno - 1].get_pixmap(matrix=pymupdf.Matrix(args.scale, args.scale))
+        dest = os.path.join(outdir, "p%d.png" % pno)
+        pix.save(dest)
+        print("p%-4d -> %s  (%dx%d)" % (pno, dest, pix.width, pix.height))
+    doc.close()
+    print("rendered %d page(s) -- open them to check table column headers" % len(pages))
+    return 0
+
+
+# --------------------------------------------------------------------------
 # check
 # --------------------------------------------------------------------------
 
@@ -673,6 +695,13 @@ def build_parser():
     p.add_argument("-o", "--out", required=True)
     p.add_argument("--scale", type=float, default=3.0)
     p.set_defaults(func=cmd_figures)
+
+    p = sub.add_parser("page", help="render whole pages to PNG (check table headers)")
+    p.add_argument("pdf")
+    p.add_argument("--pages", required=True, help="e.g. 8 or 8-10")
+    p.add_argument("-o", "--out", default=".", help="output directory")
+    p.add_argument("--scale", type=float, default=2.0)
+    p.set_defaults(func=cmd_page)
 
     p = sub.add_parser("check", help="validate an HTML deliverable")
     p.add_argument("html")
