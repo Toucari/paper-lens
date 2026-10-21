@@ -106,6 +106,38 @@ python <skill>/scripts/plens.py page paper.pdf --pages 8 -o _chk/
 
 ---
 
+## 2026-10-21 · 第 1 层复测通过（装用户级后）
+
+把所有前置信息从测试目录清出去之后（通讯书 / 测试报告 / 速读卡 / `_full.txt` / `registry` 登记行 / **`.workbuddy/memory/`** / 项目级 skill 副本），新开 session，用同一句话测：
+
+> 帮我快速看一下 mypapers/papers/ICLR 2024/.../2405.18765.pdf 这篇，值不值得读。
+
+**结果：agent 自己认出来了。** 它的推理原话：
+
+> There's a skill "paper-lens" that matches: "把一篇论文从「找到」到「评完」串成一条可裁剪的流水线，分 Quick（15 分钟速读卡）..." — Quick mode is exactly "快速看一下这篇，值不值得读". I should load that skill.
+
+全程两次调用 Skill，用户没提 skill 名字。**第 1 层通过，三档的 Quick 链路到此打通。**
+
+### ★ 第一轮不是"失败"，是被污染了
+
+首轮把通讯书、测试报告、速读卡、`registry` 登记行都留在测试目录里，结果第二轮的 agent 直接读速读卡复述——测出来的不是它的能力。
+
+**最容易漏的是 `memory`**：它不像普通文件那样需要 agent 主动去读，而是 session 启动就注入。准备这类测试，第一件事是清 `.workbuddy/memory/`。
+
+### 产出质量比首轮明显好
+
+| 项 | 首轮 | 本轮 |
+|---|---|---|
+| 数字个数 | 4 | 6（新增 SEED-V、MoBI-Huge、表 11 去 SE 消融） |
+| 模型尺寸口径 | ❌ 把 Huge 行说成 Base | ✅ 明确标注"比的是 5.8M Base，不是 369M Huge" |
+| 泄漏疑点 | 提到 TUH 同源 | 细化到 TUEP/TUAR/TUSZ/TUSL 四个子集与下游 TUAB/TUEV 的关系 |
+| 基线来源 | 未提 | 挖到 "baselines are from Yang et al. (2023a), where we choose the best results" |
+| 承重墙 | tokenizer（结论不干净） | **空间嵌入 SE**，有表 11 消融支撑（0.6409→0.5949） |
+
+新增的 6 个数字已抽查，全部对上原文。
+
+---
+
 ## 已知限制
 
 - `toc` 在无书签的 PDF 上仍有少量噪声（实测 48 条中 1 条误报）。不影响"结构是否完整"的判断，但不要直接把它当目录用。
