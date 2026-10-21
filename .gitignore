@@ -1,0 +1,37 @@
+# ---- 个人数据，绝不入库 ----
+profile.md
+*.local.md
+ledger/registry.md
+ledger/case-library.md
+
+# ---- 论文资产（体积大且版权不宜散布）----
+papers/
+rounds/
+*.pdf
+figures/
+*_中文精读.md
+*_速读卡_*.md
+*_单篇总结_*.md
+*_精读_图文版.html
+
+# ---- 临时产物 ----
+_tables.txt
+tmp/
+.tmp/
+*.log
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

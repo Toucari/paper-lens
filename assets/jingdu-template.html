@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!-- 图文版精读 HTML 骨架：复制本文件为 <short>_中文精读_图文版.html 后填充内容。
+     占位符用 {{...}} 标注；节 id 与 nav.toc 锚点保持一致；公式用 .eq div（Unicode 数学式，不引 MathJax）；
+     插图 <figure><img src="figures/figNN.png" alt="图 N"><figcaption><b>图 N</b>：中文题注</figcaption></figure>。
+     完成后运行 scripts/validate_html.py 期望 RESULT OK。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{中文短名}} 中文精读 · 图文版（{{VENUE 年份}}）</title>
+<style>
+  :root {
+    --fg: #24292f;
+    --muted: #57606a;
+    --border: #d0d7de;
+    --accent: #0969da;
+    --bg-soft: #f6f8fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0 16px 64px;
+    color: var(--fg);
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    line-height: 1.8;
+    background: #fff;
+  }
+  main { max-width: 980px; margin: 0 auto; }
+  header.doc {
+    max-width: 980px; margin: 0 auto;
+    padding: 40px 0 8px;
+    border-bottom: 3px solid var(--accent);
+  }
+  header.doc h1 { font-size: 1.7em; line-height: 1.4; margin: 0 0 8px; }
+  header.doc .sub { color: var(--muted); font-size: 0.95em; margin: 0; }
+  header.doc .note {
+    margin: 14px 0 0; padding: 10px 14px;
+    background: var(--bg-soft); border-left: 4px solid var(--accent);
+    font-size: 0.9em; color: var(--muted);
+  }
+  h2 {
+    font-size: 1.35em; margin: 44px 0 12px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.12em; margin: 28px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 8px 0; padding-left: 1.6em; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; margin: 14px 0; width: 100%;
+    font-size: 0.93em;
+  }
+  th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  code {
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    font-size: 0.9em; background: var(--bg-soft);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 1px 5px; word-break: break-word;
+  }
+  .eq {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: var(--bg-soft); border-left: 4px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px; margin: 12px 0;
+    font-family: "Cambria Math", Cambria, Georgia, serif;
+    font-size: 1.05em; overflow-x: auto;
+  }
+  .eq .no { color: var(--muted); font-size: 0.85em; white-space: nowrap; }
+  figure {
+    margin: 22px 0; padding: 14px;
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(31,35,40,0.08);
+  }
+  figure img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  figure figcaption {
+    margin-top: 10px; text-align: center;
+    font-size: 0.9em; color: var(--muted);
+  }
+  figure figcaption b { color: var(--fg); }
+  nav.toc {
+    max-width: 980px; margin: 18px auto 0;
+    padding: 14px 18px; background: var(--bg-soft);
+    border: 1px solid var(--border); border-radius: 10px;
+    font-size: 0.93em;
+  }
+  nav.toc b { display: block; margin-bottom: 6px; }
+  nav.toc a { color: var(--accent); text-decoration: none; margin-right: 14px; white-space: nowrap; }
+  nav.toc a:hover { text-decoration: underline; }
+  .key { background: #fff8c5; padding: 0 3px; border-radius: 3px; }
+  footer.doc {
+    max-width: 980px; margin: 48px auto 0; padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.88em;
+  }
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <h1>{{中文标题}}<br><span style="font-size:0.72em;color:var(--muted)">中文精读 · 图文版</span></h1>
+  <p class="sub">{{英文原题}} · {{VENUE 年份}} · arXiv:{{id}} · {{单位简称}}</p>
+  <p class="note">说明：本文档是原文的中文逐节忠实译述 + 关键图表/公式/数据整理，供个人学习精读使用；逐字原文请以同目录 <code>{{pdf 文件名}}</code> 为准。文中插图由该 PDF 矢量图区域渲染导出（<code>figures/</code> 目录），公式与实验数值为事实性内容，予以保留；行文为中文译述。</p>
+</header>
+
+<nav class="toc">
+  <b>目录</b>
+  <a href="#meta">0 元信息</a><a href="#abs">摘要</a><a href="#sec1">1 引言</a><a href="#sec2">2 方法</a><a href="#sec3">3 实验</a><a href="#sec4">4 结论</a><a href="#app">附录要点</a><a href="#terms">术语对照</a><a href="#notes">精读小结</a>
+</nav>
+
+<main>
+
+<h2 id="meta">0. 论文元信息</h2>
+<table>
+  <tr><th style="width:16%">项目</th><th>内容</th></tr>
+  <tr><td>标题</td><td>{{英文原题}}</td></tr>
+  <tr><td>作者</td><td>{{作者，通讯标注}}</td></tr>
+  <tr><td>单位</td><td>{{单位}}</td></tr>
+  <tr><td>发表</td><td>{{VENUE 年份}}</td></tr>
+  <tr><td>代码</td><td><code>{{代码 URL}}</code></td></tr>
+  <tr><td>数据/模型规模</td><td>{{预训练数据与参数量}}</td></tr>
+</table>
+
+<h2 id="abs">摘要</h2>
+<p>{{摘要忠实译述；核心挑战与对策用 <span class="key">高亮</span>}}</p>
+
+<h2 id="sec1">1. 引言</h2>
+<h3>1.1 背景与动机</h3>
+<ul><li>{{bullet}}</li></ul>
+<h3>1.2 现有工作的缺口</h3>
+<ol><li>{{编号}}</li></ol>
+<!-- 动机图：<figure><img src="figures/fig01.png" alt="图 1"><figcaption><b>图 1</b>：{{题注}}</figcaption></figure> -->
+<h3>1.3 思路与贡献</h3>
+<ul><li>{{bullet}}</li></ul>
+
+<h2 id="sec2">2. 方法</h2>
+<h3>2.1 {{小节名}}</h3>
+<p>{{译述}}</p>
+<div class="eq"><span>{{Unicode 数学式}}</span><span class="no">(1)</span></div>
+<!-- 架构图 figure -->
+
+<h2 id="sec3">3. 实验</h2>
+<h3>3.1 {{预训练/设置}}</h3>
+<ul><li>{{bullet}}</li></ul>
+<h3>3.2 {{数据集与基线}}</h3>
+<table>
+  <tr><th>{{列}}</th></tr>
+  <tr><td>{{行}}</td></tr>
+</table>
+<h3>3.3 主结果</h3>
+<p>{{关键监控指标加粗 + vs 最强基线}}</p>
+<h3>3.4 消融与分析</h3>
+<ul><li>{{每消融一句结论 + 图/表号}}</li></ul>
+
+<h2 id="sec4">4. 结论</h2>
+<p>{{结论 + 局限 + 未来方向}}</p>
+
+<h2 id="app">附录要点速览</h2>
+<ul><li><b>{{附录字母}}</b>：{{一句}}</li></ul>
+
+<h2 id="terms">术语中英对照表</h2>
+<table>
+  <tr><th style="width:45%">中文</th><th>英文</th></tr>
+  <tr><td>{{中}}</td><td>{{英}}</td></tr>
+</table>
+
+<h2 id="notes">精读小结</h2>
+<ol><li>{{4–6 条洞察，末条 tie 到用户主线与可复现性}}</li></ol>
+
+</main>
+
+<footer class="doc">
+  {{中文短名}} 中文精读 · 图文版 ｜ 依据 arXiv:{{id}}（{{VENUE 年份}}）整理 ｜ 插图：PDF 矢量区域 3× 渲染导出 ｜ 仅供个人学习使用
+</footer>
+
+</body>
+</html>
