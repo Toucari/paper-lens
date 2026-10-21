@@ -22,8 +22,8 @@
 ## 二、抽全文
 
 ```bash
-python scripts/plens.py text paper.pdf -o _full.txt
-python scripts/plens.py text paper.pdf -o _p7-10.txt --pages 7-10
+python <skill>/scripts/plens.py text paper.pdf -o _full.txt
+python <skill>/scripts/plens.py text paper.pdf -o _p7-10.txt --pages 7-10
 ```
 
 输出每页带 `===== PDF page N =====` 分隔头，便于按页定位。
@@ -39,7 +39,7 @@ python scripts/plens.py text paper.pdf -o _p7-10.txt --pages 7-10
 ## 三、先捞节标题，再读内容（最容易省掉、也最容易出事的一步）
 
 ```bash
-python scripts/plens.py toc paper.pdf
+python <skill>/scripts/plens.py toc paper.pdf
 ```
 
 输出带层级和页码的标题清单，例如：
@@ -74,7 +74,7 @@ python scripts/plens.py toc paper.pdf
 ## 四、抽图
 
 ```bash
-python scripts/plens.py figures paper.pdf -o figures/
+python <skill>/scripts/plens.py figures paper.pdf -o figures/
 ```
 
 做法：定位 `Figure N:` 题注 → 向上取最近的矢量/图像区域 → 向下取到题注底部 → 按倍数渲染成 PNG。
@@ -120,6 +120,27 @@ python scripts/plens.py figures paper.pdf -o figures/
 | 公式变成乱码 | 数学字体无 Unicode 映射 | 以图像为准，手动录入 LaTeX |
 | 连字符断词 | 排版换行 | grep 时把关键词拆开试：`cross-\nsubject` |
 | 双栏顺序错乱 | 抽取按坐标排序 | 按页抽，逐页看上下文 |
+| **表格列错位** | 表头与数据行拆成不同文本块，列顺序会串 | **回看 PDF 确认哪列是哪列**，再填表 |
+
+### ⚠️ 表格数值不能盲抄
+
+文本层能给你**准确的数字**，但不保证给你**正确的列**。抽出来常常是这样：
+
+```
+GLFA       ECCV 24   1   0.840±0.03  0.209±0.02  0.742±0.49 ...
+MindBridge CVPR 24   1   0.821±0.03  0.206±0.02  0.754±0.42 ...
+MindCross  Ours      1   0.830±0.03  0.210±0.03  0.762±0.34 ...
+```
+
+六个数并排摆着，但**哪个数是哪个指标，这段文本并不告诉你**——列头可能在上面几行，也可能在另一页。
+
+正确顺序：
+
+1. 抽文本，拿到**准确数值**
+2. 打开 PDF 盯着该表，确认**列头顺序**和**哪一格是加粗的最优值**
+3. 两边对齐后再填进产物
+
+只做第 1 步就填表，会把「语义指标」和「像素指标」写反——而且成品看起来毫无破绽。
 
 ---
 

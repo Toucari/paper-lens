@@ -91,7 +91,7 @@ curl -sL "https://export.arxiv.org/api/query?id_list=2412.07236,2505.15813"
 ## 五、下载 + 校验 + 归档
 
 ```bash
-python scripts/plens.py fetch 2010.11929 \
+python <skill>/scripts/plens.py fetch 2010.11929 \
   --venue "ICLR 2021" \
   --title "An Image is Worth 16x16 Words Transformers for Image Recognition at Scale" \
   --root "$PL_ROOT"
@@ -120,7 +120,7 @@ python scripts/plens.py fetch 2010.11929 \
 
 ### info.md
 
-用 `assets/info-template.md` 填：四列表格 + `下载源：` 行 + 可选 `代码：` 行。
+用 `<skill>/assets/info-template.md` 填：四列表格 + `下载源：` 行 + 可选 `代码：` 行。
 
 必填：完整标题（保留标点）、venue 全名 + 是否主会、arXiv abs 链接、发表年月。
 

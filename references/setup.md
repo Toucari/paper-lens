@@ -23,7 +23,7 @@
 
 ## 二、生成 profile.md
 
-用 `assets/profile-template.md` 复制一份到 `$PL_ROOT/profile.md`，填好。
+用 `<skill>/assets/profile-template.md` 复制一份到 `$PL_ROOT/profile.md`，填好。
 
 最小可用配置只需要三段：`research`、`venues`、`paths`。其余可留空。
 
@@ -64,7 +64,7 @@
 ## 三、初始化库目录
 
 ```bash
-python scripts/plens.py init --root "<PL_ROOT>"
+python <skill>/scripts/plens.py init --root "<PL_ROOT>"
 ```
 
 会建出：
@@ -102,14 +102,14 @@ python -c "import pypdf;   print('pypdf', pypdf.__version__)"
 
 ```bash
 # 1. 抽文本（拿任意一篇已有 PDF 试）
-python scripts/plens.py text paper.pdf -o _test.txt
+python <skill>/scripts/plens.py text paper.pdf -o _test.txt
 wc -l _test.txt
 
 # 2. 捞标题
-python scripts/plens.py toc paper.pdf
+python <skill>/scripts/plens.py toc paper.pdf
 
 # 3. 抽图
-python scripts/plens.py figures paper.pdf -o _test_figs/
+python <skill>/scripts/plens.py figures paper.pdf -o _test_figs/
 
 # 4. 看结果
 ls _test_figs/

@@ -10,6 +10,9 @@ license: MIT
 
 上游不是"让 AI 把论文读完替你总结"，而是**把论文变成你能高效读完的形态**，总结建立在你自己读完之后的判断上。这条设计约束贯穿全流程，不要绕过。
 
+> **路径约定**：本文档及 `references/` 中出现的 `references/xxx.md`、`assets/xxx.md`、`scripts/plens.py`，**都相对于本 SKILL.md 所在目录**（下文记作 `<skill>`）。产物一律写到 `<PL_ROOT>`（论文库根目录），两者不是同一个地方。
+> 执行 shell 命令时必须写全路径 `python <skill>/scripts/plens.py ...`，**不要写 `python scripts/plens.py`**——工作目录通常不是 skill 目录，会直接报找不到文件。
+
 ---
 
 ## 一、先定档（第一步，不可跳）
@@ -83,10 +86,10 @@ Standard 及以上档位的八节总结，**必须等用户明确确认读完**�
 
 ```
 1. references/00-conventions.md      ← 目录与命名
-2. scripts/plens.py text  <pdf>      ← 抽全文（可 grep）
-3. scripts/plens.py toc   <pdf>      ← 捞全部节标题，别靠分段读拼窗口
+2. <skill>/scripts/plens.py text  <pdf>   ← 抽全文（可 grep）
+3. <skill>/scripts/plens.py toc   <pdf>   ← 捞全部节标题，别靠分段读拼窗口
 4. 读：摘要 / 引言末段（贡献列表）/ 方法首段 / 主结果表 / 结论末段（局限）
-5. 按 assets/quick-card-template.md 出卡
+5. 按 <skill>/assets/quick-card-template.md 出卡
 ```
 
 **Quick 只有 15 分钟的预算**，所以：不抽图、不建 HTML、不打分、不写八节。但**律 1 仍然生效**——速读卡里的每个数字也要能指回原文。
@@ -156,15 +159,35 @@ Standard 及以上档位的八节总结，**必须等用户明确确认读完**�
 
 ## 七、脚本
 
-统一入口 `scripts/plens.py`，零配置、跨平台，自动在 `pymupdf` / `pypdf` 之间选可用后端：
+统一入口 `<skill>/scripts/plens.py`，零配置、跨平台，自动在 `pymupdf` / `pypdf` 之间选可用后端。
+
+### 记牢两个路径，别混
+
+| 记号 | 指什么 | 例 |
+|---|---|---|
+| `<skill>` | **本 SKILL.md 所在目录**（只读） | `/home/me/paper-lens` |
+| `<PL_ROOT>` | 论文库根目录（写产物的地方） | `/home/me/papers` |
+
+命令里的脚本路径必须用 `<skill>/` 开头。**不要用 `python scripts/plens.py`**——那会按当前工作目录找，而工作时工作目录通常是论文项目或库根，会直接报找不到文件。
+
+### 先确认解释器
 
 ```bash
-python scripts/plens.py init     --root <根目录>        # 建目录 + 空登记册/案例库
-python scripts/plens.py fetch    <arxiv_id> --venue "ICLR 2025" --title "..." --root <根>
-python scripts/plens.py text     <pdf> -o out.txt [--pages 3,4-7]
-python scripts/plens.py toc      <pdf>                  # 捞全部节标题
-python scripts/plens.py figures  <pdf> -o figures/ [--scale 4]
-python scripts/plens.py check    <html>                 # 标签/图片/锚点校验
+python -c "import pymupdf; print('pymupdf ok')"   # 抽图必须
+python -c "import pypdf;   print('pypdf ok')"     # 只有它能抽文本
+```
+
+哪个 `python` 能 import 成功，就用哪个（下文记作 `$PY`）。两个都没有就先装。
+
+### 六个子命令
+
+```bash
+python <skill>/scripts/plens.py init     --root <PL_ROOT>
+python <skill>/scripts/plens.py fetch    <arxiv_id> --venue "ICLR 2025" --title "..." --root <PL_ROOT>
+python <skill>/scripts/plens.py text     <pdf> -o out.txt [--pages 3,4-7]
+python <skill>/scripts/plens.py toc      <pdf>
+python <skill>/scripts/plens.py figures  <pdf> -o figures/ [--scale 4]
+python <skill>/scripts/plens.py check    <html>
 ```
 
 依赖：`pip install pymupdf`（推荐，抽图必须）或 `pip install pypdf`（仅抽文本够用）。

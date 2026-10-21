@@ -177,7 +177,7 @@
 
 ## 六、图文版 HTML（Full 档）
 
-以 `assets/jingdu-template.html` 为骨架，CSS 已内置，**不要改样式**——统一外观是为了多篇之间可对照。
+以 `<skill>/assets/jingdu-template.html` 为骨架，CSS 已内置，**不要改样式**——统一外观是为了多篇之间可对照。
 
 结构：`header.doc` → `nav.toc`（锚点目录）→ `main`（`h2[id]` 分节）→ `footer.doc`。
 
@@ -192,7 +192,7 @@
 完成后必须校验：
 
 ```bash
-python scripts/plens.py check <html>
+python <skill>/scripts/plens.py check <html>
 ```
 
 期望 `RESULT OK`。它检查三件事：标签闭合、图片路径存在、锚点可达。
