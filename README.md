@@ -14,7 +14,7 @@ paper-lens 走反方向。它把机械的部分自动化（抽文本、捞结构
 | ------------ | ------------ | --------------------------- | ------------- |
 | **Quick**    | 这篇**值不值得**读  | 一页速读卡                       | 什么都不用做，5 分钟看卡 |
 | **Standard** | 这篇**到底怎么做**的 | 讲解级精读稿 + 八节总结               | 自己读完精读稿，期间提问  |
-| **Full**     | 这批里**哪几篇能用** | 上面全部 + 图文 HTML + 五维分 + 跨篇账本 | 参与横向判断        |
+| **Full**     | 这批里**哪几篇能用** | 上面全部 + 图文 HTML + 六维分 + 跨篇账本 | 参与横向判断        |
 
 默认走 Quick。**升档由你决定**——Standard 需要你投入几小时阅读，不该由工具替你决定。
 
@@ -96,7 +96,7 @@ python $SK/scripts/plens.py figures paper.pdf -o figures/
 
 ---
 
-## 六个阶段
+## 配置 + 六个阶段
 
 `SKILL.md` 只做路由和硬约束，细节在 `references/`，按档位**按需加载**：
 
@@ -107,7 +107,7 @@ python $SK/scripts/plens.py figures paper.pdf -o figures/
 | 2 | 解包 | `02-ingest.md`        | 校验 PDF、抽全文、**先捞节标题**、裁图 |
 | 3 | 精读 | `03-read.md`          | 讲解级精读稿 + 图文 HTML        |
 | 4 | 总结 | `04-summarize.md`     | 八节结构化总结                 |
-| 5 | 评估 | `05-evaluate.md`      | 五维加权分、校准、登记册、批次横向       |
+| 5 | 评估 | `05-evaluate.md`      | 六维加权分、校准、登记册、批次横向       |
 | 6 | 审计 | `06-leakage-audit.md` | 分数能不能当证据                |
 
 `00-conventions.md` 是全局约定，任何档位开始前读一次。
@@ -124,16 +124,21 @@ python $SK/scripts/plens.py figures paper.pdf -o figures/
 
 ## 脚本
 
-一个入口，零配置，自动在 `pymupdf` / `pypdf` 之间选后端：
+一个入口，零配置，自动在 `pymupdf` / `pypdf` 之间选后端。
+
+**命令里的脚本路径必须带 `<skill>/` 前缀**（`<skill>` = 本仓库所在目录）：
 
 ```bash
-python scripts/plens.py init     --root DIR           # 建 papers/ rounds/ ledger/
-python scripts/plens.py fetch    ARXIV_ID --venue "ICLR 2025" --title "..." [--version v2]
-python scripts/plens.py text     PDF -o OUT [--pages 3,4-7]
-python scripts/plens.py toc      PDF                  # 全部节标题 + 页码
-python scripts/plens.py figures  PDF -o DIR [--scale 4]
-python scripts/plens.py check    HTML                 # 标签闭合 / 图片存在 / 锚点可达
+python <skill>/scripts/plens.py init     --root DIR                  # 建 papers/ rounds/ ledger/
+python <skill>/scripts/plens.py fetch    ARXIV_ID --venue "ICLR 2025" --title "..." [--version v2]
+python <skill>/scripts/plens.py text     PDF -o OUT [--pages 3,4-7]
+python <skill>/scripts/plens.py toc      PDF                         # 全部节标题 + 页码
+python <skill>/scripts/plens.py page     PDF --pages 8 -o DIR        # 整页渲染，核表格列头用
+python <skill>/scripts/plens.py figures  PDF -o DIR [--scale 4]
+python <skill>/scripts/plens.py check    HTML                        # 标签闭合 / 图片存在 / 锚点可达
 ```
+
+> ⚠️ **不要写 `python scripts/plens.py`**（相对路径）。skill 装好后，agent 的工作目录是论文库根，不是仓库目录——这条命令必然报 `No such file or directory`。这是 2026-10 首次真机测试查出的**阻断级**问题，见 `CHANGELOG.md`。
 
 `fetch` 会对每个 PDF 做三道校验：`%PDF-` 头、`%%EOF` 尾、体积 > 10 KB。不通过就报 FAIL，不会把坏文件当成功。
 
@@ -150,19 +155,24 @@ python scripts/plens.py check    HTML                 # 标签闭合 / 图片存
 
 ---
 
-## 五维评分
+## 六维评分
 
 给"这篇值不值"一个可比较、可累积的尺度：
 
-| 维度    | 权重  |
-| ----- | --- |
-| 方法创新  | 20% |
-| 实证可信度 | 25% |
-| 可复现性  | 20% |
-| 可搬运性  | 20% |
-| 严谨与诚实 | 15% |
+| 维度 | 权重 | 一句话问法 |
+| --- | --- | --- |
+| 方法创新 | 15% | 有没有真新的东西，还是组合已有模块 |
+| 实证可信度 | 25% | 这个结果**能不能当证据** |
+| 可复现性 | 15% | 能不能**跑出同样的数** |
+| 可搬运性 | 20% | 有哪些模块能直接拿走 |
+| 严谨与诚实 | 10% | claim 与证据是否匹配 |
+| **训练开销** | 15% | **我跑得起吗** |
 
-逐档锚点在 `assets/scoring-anchors.md`。分档：≥ 4.0 = A，3.3–3.9 = B，< 3.3 = C。
+逐档锚点在 `assets/scoring-anchors.md`。分档：≥ 4.0 = A，3.3–3.9 = B，< 3.3 = C。开销完全查不到的记 `N/A`，按其余五维归一化，**不许拿"同类工作通常的算力"替它填一个数**。
+
+**为什么把「训练开销」单列**（v2，2026-11 起）：v1 把它混在「可复现性 / 成本」里，结果是"代码齐全但需要 64 卡"和"代码有 bug 但单卡能跑"扣同一个分——这两件事毫不相干。拆开之后，"哪些论文我跑得起"这个信息才看得见，而不是被平均掉。
+
+> **⛔ v1（五维）与 v2（六维）的分数不可直接比较。** 历史行在账本里标 `v1`，新行标 `v2`，不要混排。要不要重算历史分由你决定，工具只出建议。
 
 **"实证可信度"问的不是结果好不好，而是"这个结果能不能当证据"。** 这一维最容易被打错——被漂亮的数字带偏。检查项包括：超参是否在测试集上选、划分粒度是否声明、消融是否只动一个变量、基线数字是自己跑的还是引用的、有没有显著性检验。
 
@@ -222,17 +232,56 @@ paper-lens/
 
 每次改动都记在 `CHANGELOG.md`：改了什么、为什么改、被哪次实测或哪篇论文触发。**改锚点会让历史分数整体漂移**，这类改动尤其要留痕。
 
+### 升级不会碰你的数据（解耦契约）
+
+这套东西被拆成**三个物理位置**，升级只动第一个：
+
+| 位置 | 放什么 | 升级时 | 进版本控制 |
+|---|---|---|---|
+| `<skill>/`（本仓库） | 流程、模板、脚本、锚点默认值 | **`git pull` 整体替换** | ✅ 是 |
+| `<PL_ROOT>/profile.md` | 你的方向、场子白名单、目录、**权重覆盖** | 不动 | ❌ 否 |
+| `<PL_ROOT>/papers/ rounds/ ledger/` | 论文、速读卡、总结、两个账本 | 不动 | ❌ 否 |
+
+**一句话契约：仓库里不写任何个人领域内容，个人内容只允许出现在 `profile.md`。**
+
+所以：
+
+- 升级后**你的论文库一行都不会变**——`papers/`、`rounds/`、`ledger/` 全在 `<PL_ROOT>`，不在仓库里。
+- 升级后**你的评分口径也不会变**——若你在 `profile.md` 里用 `scoring.weights` 覆盖了默认权重，覆盖值优先。
+- 想本地改流程（而不是改配置）→ 在仓库里改，但下次 `git pull` 会有冲突。**能被配置覆盖的，就别改代码。**
+
+升级后跑一遍自检，确认三件事还在：
+
+```bash
+# 1. profile 还在，且能被解析
+test -f <PL_ROOT>/profile.md && head -20 <PL_ROOT>/profile.md
+
+# 2. 两个账本还在，行数没归零
+wc -l <PL_ROOT>/ledger/registry.md <PL_ROOT>/ledger/case-library.md
+
+# 3. 论文目录还在
+ls <PL_ROOT>/papers | head
+```
+
+三条都过，升级就是无损的。任何一条不对，先停下——回滚方式是 `git -C <skill> checkout <上一个 commit>`。
+
+### 为什么不做成"一个大文件"
+
+单文件看起来更好装，但五份流程正文合计 28 KB，塞进一个文件会超出可读上限，实际执行时**步骤会被跳过**（这不是推测，是自己的使用记录）。所以采用**单入口 + references 分层**：`SKILL.md` 只放档位判断、三条硬律、阶段路由；细节按需加载。
+
+代价是文件多。收益是每一步真的会被读到。
+
 ### 当前验证状态
 
 诚实交代，避免误导：
 
 | 档位 / 部件 | 状态 |
 |---|---|
-| `plens.py` 六个子命令 | ✅ 在 3 篇不同格式的 PDF 上实测（有书签 / 无书签 / 仅 pypdf 降级） |
+| `plens.py` 七个子命令 | ✅ 在 3 篇不同格式的 PDF 上实测（有书签 / 无书签 / 仅 pypdf 降级）；`page` 在首次真机测试后新增 |
 | **Quick 档** | ✅ 真机验证：两轮独立会话跑同一篇 22 页论文，产出可用，7+6 个数字抽查全部对上原文 |
 | Standard 档 | ⚠️ 只有设计，未实测 |
 | Full 档 | ⚠️ 只有设计，未实测 |
-| 五维评分的锚点校准 | ⚠️ 锚点来自实际使用，但没有跨用户的校准数据 |
+| 六维评分的锚点校准 | ⚠️ 锚点来自实际使用，但没有跨用户的校准数据；六维相对五维**尚未在真实批次上完整跑过一轮** |
 
 ### 欢迎反馈
 

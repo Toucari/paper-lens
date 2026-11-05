@@ -47,6 +47,9 @@
 ## preferences
 - language: zh              # 产物语言
 - date_format: "%Y-%m-%d"
+
+## scoring                  # 可选：覆盖默认六维权重（不填用默认）
+- weights: {novelty: 15, evidence: 25, repro: 15, reuse: 20, honesty: 10, cost: 15}
 ```
 
 ### 字段说明
@@ -58,6 +61,7 @@
 | `paths.root` | 所有产物的落点 | 无法运行 |
 | `paths.topic_grouping` | `papers/` 下的二级分组 | 平铺，论文多了自己找不到 |
 | `preferences.language` | 产物语言 | 默认中文 |
+| `scoring.weights` | 覆盖默认六维权重 | 用默认值。**改了等于换口径版本**，必须记 `ledger/changelog.md` 并做历史重算判断 |
 
 ---
 

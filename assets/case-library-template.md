@@ -15,26 +15,30 @@
 
 | 列 | 填什么 |
 |---|---|
-| novelty / evidence / repro / reuse / honesty | 五维原始分，1–5 整数 |
-| total | 加权总分，两位小数 |
+| novelty / evidence / repro / reuse / honesty / cost | 六维原始分，1–5 整数；`cost` 完全查不到时填 `NA` |
+| total | 加权总分，两位小数；`cost = NA` 时为五维归一化值，另在备注写明 |
+| version | 口径版本，`v1`（五维，已废弃）或 `v2`（六维，现行） |
 | grade | A（≥4.0）/ B（3.3–3.9）/ C（<3.3） |
 | one-line reason | 一句话说清"为什么是这个档"，不要写"质量不错" |
 | key anchor | 最关键的那条证据，带表号/式号/代码行 |
 
+> **`version` 列不是装饰**：v1 与 v2 权重不同，混在一张表里排序没有意义。历史行保持原样标 `v1`，不要为了整齐而重算。
+
 ## 案例库
 
-| short | venue year | novelty | evidence | repro | reuse | honesty | total | grade | one-line reason | key anchor |
-|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | |
+| short | venue year | novelty | evidence | repro | reuse | honesty | cost | total | version | grade | one-line reason | key anchor |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | | |
 
 ---
 
 <!--
-示例行（格式参照，分数请自行判断，不要照抄）：
+示例行（**虚构，仅演示格式**；分数请自行判断，不要照抄）：
 
-| SomeModel | ICLR 2025 | 4 | 5 | 5 | 4 | 4 | 4.45 | A | 证据最硬、成本最低、消融最规范 | 4M 参数打平 369M 基线（Kappa 0.6772 vs 0.6745）；消融每个变体从头预训练且参数量对齐；主动做泄漏对照。扣分：核心先验未实证 |
+| SomeModel | ICLR 2025 | 3 | 5 | 5 | 4 | 4 | 5 | 4.40 | v2 | A | 证据最硬、成本最低、消融最规范 | 4M 参数打平 369M 基线；消融每个变体从头预训练且参数量对齐；主动做泄漏对照。扣分：核心先验未实证 |
 
 写法要点：
 - "one-line reason" 要能被别人拿去比较，不能是"这篇很好"。
 - "key anchor" 只写一条最有说服力的，多了反而没法用作锚点。
+- 一条行的信息密度上限大约是 30 字理由 + 一条锚点，再长就没人读了。
 -->

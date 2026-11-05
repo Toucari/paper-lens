@@ -579,6 +579,8 @@ REGISTRY_STUB = """# Registry -- full index of every paper
 
 One row per paper. Register immediately after reading, do not batch it up.
 The "last check" column is the only column you may update automatically.
+The "score" cell carries its rubric version, e.g. `v2 3.85` / `v1 4.10` --
+v1 (5-dim) and v2 (6-dim) scores are NOT comparable.
 
 | round | # | short | venue year | summary file | grade | score | sections ok | last check |
 |---|---|---|---|---|---|---|---|---|
@@ -588,9 +590,11 @@ CASE_LIBRARY_STUB = """# Case library -- scoring anchors
 
 Read the last 10 rows before scoring to calibrate your scale.
 Dedupe key = short + venue. Re-scoring overwrites the old row, tagged `[redo YYYY-MM-DD]`.
+`cost` = training-budget dimension (v2). Use `NA` when the paper reports nothing.
+`version` = rubric version (`v1` 5-dim / `v2` 6-dim). Never rank across versions.
 
-| short | venue year | novelty | evidence | repro | reuse | honesty | total | grade | one-line reason | key anchor |
-|---|---|---|---|---|---|---|---|---|---|---|
+| short | venue year | novelty | evidence | repro | reuse | honesty | cost | total | version | grade | one-line reason | key anchor |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
 """
 
 CHANGELOG_STUB = """# Changelog
@@ -643,7 +647,9 @@ def cmd_init(args):
                 "- topic_grouping: []\n\n"
                 "## preferences\n"
                 "- language: zh\n"
-                "- date_format: \"%%Y-%%m-%%d\"\n" % root)
+                "- date_format: \"%%Y-%%m-%%d\"\n\n"
+                "## scoring  # optional: override the default six-dim weights\n"
+                "- weights: {novelty: 15, evidence: 25, repro: 15, reuse: 20, honesty: 10, cost: 15}\n" % root)
         made.append("profile.md")
 
     print("root: %s" % root)
